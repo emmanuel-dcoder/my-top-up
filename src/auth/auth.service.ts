@@ -58,7 +58,7 @@ export class AuthService {
       return {
         _id: user._id,
         mobileNumber: user.mobileNumber,
-        jwtToken: this.jwtService.sign(payload),
+        jwtToken: await this.jwtService.sign(payload),
       };
     } catch (error) {
       throw new HttpException(

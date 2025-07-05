@@ -15,6 +15,7 @@ import {
   ApiResponse,
   ApiBody,
   ApiBasicAuth,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { User } from './schemas/user.schema';
 import { successResponse } from '../core/config/response';
@@ -46,15 +47,15 @@ export class UserController {
   }
 
   @Get('profile')
-  @ApiBasicAuth()
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get authenticated user profile' })
   @ApiResponse({
     status: 200,
     description: 'User profile retrieved successfully',
   })
-  async getProfile(@Req() user: any) {
-    const data = await this.userService.getUserProfile(user._id);
+  async getProfile(@Req() req: any) {
+    const data = await this.userService.getUserProfile(req.user._id);
     return successResponse({
       message: 'User profile retrieved successfully',
       code: HttpStatus.OK,
