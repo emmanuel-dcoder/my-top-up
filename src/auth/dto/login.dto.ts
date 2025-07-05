@@ -72,6 +72,10 @@ export class VerifyAccountDto {
   @IsString()
   mobileNumber: string;
 
+  @ApiProperty({
+    description: 'Verification otp',
+    example: 'Mgfd',
+  })
   @IsNotEmpty()
   @IsString()
   verificationOtp: string;

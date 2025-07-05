@@ -24,7 +24,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Login successful',
-    type: CreateUserDto,
+    type: Object,
     example: { access_token: 'jwt.token.here' },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

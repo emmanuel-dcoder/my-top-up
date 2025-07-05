@@ -1,9 +1,24 @@
-import { Controller, Get, Post, Body, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  HttpStatus,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiBasicAuth,
+} from '@nestjs/swagger';
 import { User } from './schemas/user.schema';
 import { successResponse } from '../core/config/response';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 
 @ApiTags('User')
 @Controller('api/v1/user')
@@ -24,6 +39,24 @@ export class UserController {
     return successResponse({
       message:
         'Registration successful, Kindly provide your otp to get verified',
+      code: HttpStatus.OK,
+      status: 'success',
+      data,
+    });
+  }
+
+  @Get('profile')
+  @ApiBasicAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get authenticated user profile' })
+  @ApiResponse({
+    status: 200,
+    description: 'User profile retrieved successfully',
+  })
+  async getProfile(@Req() user: any) {
+    const data = await this.userService.getUserProfile(user._id);
+    return successResponse({
+      message: 'User profile retrieved successfully',
       code: HttpStatus.OK,
       status: 'success',
       data,

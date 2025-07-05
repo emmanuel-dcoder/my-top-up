@@ -31,6 +31,11 @@ export class AuthService {
         mobileNumber: validateNumber.phone,
       });
 
+      if (!user.isVerified)
+        throw new BadRequestException(
+          'Unverified user, kindly verify your account',
+        );
+
       if (!user || !(await comparePassword(pass, user.password))) {
         throw new BadRequestException('Invalid mobileNumber or password');
       }
@@ -47,12 +52,12 @@ export class AuthService {
   async login(user: JwtPayload) {
     try {
       const payload = {
-        _id: user._id,
+        sub: user._id,
         mobileNumber: user.mobileNumber,
       };
       return {
         _id: user._id,
-        email: user.mobileNumber,
+        mobileNumber: user.mobileNumber,
         jwtToken: this.jwtService.sign(payload),
       };
     } catch (error) {

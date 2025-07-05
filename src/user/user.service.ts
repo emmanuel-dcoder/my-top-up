@@ -1,6 +1,6 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
@@ -38,6 +38,23 @@ export class UserService {
 
       createdUser.password = undefined;
       return createdUser;
+    } catch (error) {
+      throw new HttpException(
+        error?.response?.message ?? error?.message,
+        error?.status ?? error?.statusCode ?? 500,
+      );
+    }
+  }
+
+  /**fetching user profile */
+  async getUserProfile(userId: string): Promise<User> {
+    try {
+      const user = await this.userModel
+        .findOne({ _id: new mongoose.Types.ObjectId(userId) })
+        .select('-password');
+
+      if (!user) throw new BadRequestException('User not found');
+      return user;
     } catch (error) {
       throw new HttpException(
         error?.response?.message ?? error?.message,
