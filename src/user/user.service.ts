@@ -23,7 +23,7 @@ export class UserService {
       if (validatePhone)
         throw new BadRequestException('Mobile number already exist');
 
-      let otp = AlphaNumeric(4);
+      let otp = AlphaNumeric(4, 'number');
 
       const hashedPassword = await hashPassword(password);
       const createdUser = await this.userModel.create({

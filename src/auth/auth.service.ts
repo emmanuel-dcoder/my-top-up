@@ -103,10 +103,10 @@ export class AuthService {
       if (user.isVerified)
         throw new BadRequestException('User already verified');
 
-      let otp = AlphaNumeric(4);
+      let otp = AlphaNumeric(4, 'number');
       let check = await this.userModel.findOne({ verificationOtp: otp });
       while (check) {
-        otp = AlphaNumeric(4);
+        otp = AlphaNumeric(4, 'number');
         check = await this.userModel.findOne({ verificationOtp: otp });
       }
 
