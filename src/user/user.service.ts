@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
+  AlphaNumeric,
   hashPassword,
   sanitizePhoneNumber,
 } from 'src/core/common/util/utility';
@@ -21,12 +22,18 @@ export class UserService {
       });
       if (validatePhone)
         throw new BadRequestException('Mobile number already exist');
+
+      let otp = AlphaNumeric(4);
       const hashedPassword = await hashPassword(password);
       const createdUser = await this.userModel.create({
         ...createUserDto,
         mobileNumber: mobile.phone,
         password: hashedPassword,
+        verificationOtp: otp,
       });
+
+      /**send verification otp to provided mobile number */
+
       createdUser.password = undefined;
       return createdUser;
     } catch (error) {

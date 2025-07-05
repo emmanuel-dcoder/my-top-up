@@ -8,6 +8,7 @@ import {
 } from './dto/login.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { successResponse } from '../core/config/response';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 @ApiTags('Auth')
 @Controller('api/v1/auth')
@@ -21,7 +22,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Login successful',
-    type: Object,
+    type: CreateUserDto,
     example: { access_token: 'jwt.token.here' },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

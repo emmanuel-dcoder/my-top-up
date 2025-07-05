@@ -22,7 +22,8 @@ export class UserController {
   async create(@Body() createUserDto: CreateUserDto) {
     const data = await this.userService.create(createUserDto);
     return successResponse({
-      message: 'Registration successful, kindly login',
+      message:
+        'Registration successful, Kindly provide your otp to get verified',
       code: HttpStatus.OK,
       status: 'success',
       data,

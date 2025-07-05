@@ -10,6 +10,7 @@ import {
 } from '../core/common/util/utility';
 import { User } from '../user/schemas/user.schema';
 import { ChangePasswordDto, VerifyOtpDto } from './dto/login.dto';
+import { JwtPayload } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -38,7 +39,7 @@ export class AuthService {
     }
   }
 
-  async login(user: { _id: string; mobileNumber: string }) {
+  async login(user: JwtPayload) {
     try {
       const payload = {
         _id: user._id,
@@ -74,6 +75,7 @@ export class AuthService {
       }
 
       user.resetOtp = otp;
+      user.resetOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
       await user.save();
 
       // Only return OTP in development
@@ -97,8 +99,9 @@ export class AuthService {
       const mobile = sanitizePhoneNumber(mobileNumber);
 
       const user = await this.userModel.findOne({ mobileNumber: mobile.phone });
-      if (!user || user.resetOtp !== otp)
-        throw new BadRequestException('Invalid OTP');
+      if (!user || user.resetOtp !== otp || new Date() > user.resetOtpExpires) {
+        throw new BadRequestException('Invalid or expired OTP');
+      }
 
       return { verified: true };
     } catch (error) {
