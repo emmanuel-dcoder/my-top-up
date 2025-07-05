@@ -15,25 +15,19 @@ export class UserService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       const { password, mobileNumber } = createUserDto;
-
       const mobile = sanitizePhoneNumber(mobileNumber);
-
       const validatePhone = await this.userModel.findOne({
         mobileNumber: mobile.phone,
       });
       if (validatePhone)
         throw new BadRequestException('Mobile number already exist');
-
       const hashedPassword = await hashPassword(password);
-
       const createdUser = await this.userModel.create({
         ...createUserDto,
         mobileNumber: mobile.phone,
         password: hashedPassword,
       });
-
       createdUser.password = undefined;
-
       return createdUser;
     } catch (error) {
       throw new HttpException(

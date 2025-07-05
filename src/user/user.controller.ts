@@ -21,7 +21,6 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   async create(@Body() createUserDto: CreateUserDto) {
     const data = await this.userService.create(createUserDto);
-
     return successResponse({
       message: 'Registration successful, kindly login',
       code: HttpStatus.OK,
