@@ -4,6 +4,8 @@ import {
   ChangePasswordDto,
   ForgotPasswordDto,
   LoginDto,
+  ResendVerificationOtpDto,
+  VerifyAccountDto,
   VerifyOtpDto,
 } from './dto/login.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
@@ -34,6 +36,32 @@ export class AuthController {
     const data = await this.authService.login(user);
     return successResponse({
       message: 'Login successful',
+      code: HttpStatus.OK,
+      status: 'success',
+      data,
+    });
+  }
+
+  @Post('verify-account')
+  @ApiOperation({ summary: 'Verify user account with OTP' })
+  @ApiBody({ type: VerifyAccountDto })
+  async verifyUser(@Body() dto: VerifyAccountDto) {
+    const data = await this.authService.verifyUser(dto);
+    return successResponse({
+      message: 'Account verified successfully',
+      code: HttpStatus.OK,
+      status: 'success',
+      data,
+    });
+  }
+
+  @Post('resend-verification-otp')
+  @ApiOperation({ summary: 'Resend verification OTP to user' })
+  @ApiBody({ type: ResendVerificationOtpDto })
+  async resendOtp(@Body() dto: ResendVerificationOtpDto) {
+    const data = await this.authService.resendVerficationOtp(dto.mobileNumber);
+    return successResponse({
+      message: 'OTP sent to your mobile number',
       code: HttpStatus.OK,
       status: 'success',
       data,

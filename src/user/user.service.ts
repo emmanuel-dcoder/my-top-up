@@ -24,12 +24,14 @@ export class UserService {
         throw new BadRequestException('Mobile number already exist');
 
       let otp = AlphaNumeric(4);
+
       const hashedPassword = await hashPassword(password);
       const createdUser = await this.userModel.create({
         ...createUserDto,
         mobileNumber: mobile.phone,
         password: hashedPassword,
         verificationOtp: otp,
+        verificationOtpExpires: new Date(Date.now() + 10 * 60 * 1000),
       });
 
       /**send verification otp to provided mobile number */

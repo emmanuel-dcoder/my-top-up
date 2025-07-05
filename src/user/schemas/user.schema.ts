@@ -23,6 +23,9 @@ export class User extends Document {
 
   @Prop({ required: false })
   resetOtpExpires: Date;
+
+  @Prop({ required: false })
+  verificationOtpExpires: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

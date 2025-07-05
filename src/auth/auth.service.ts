@@ -3,13 +3,18 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
+  AlphaNumeric,
   comparePassword,
   hashPassword,
   RandomSixDigits,
   sanitizePhoneNumber,
 } from '../core/common/util/utility';
 import { User } from '../user/schemas/user.schema';
-import { ChangePasswordDto, VerifyOtpDto } from './dto/login.dto';
+import {
+  ChangePasswordDto,
+  VerifyAccountDto,
+  VerifyOtpDto,
+} from './dto/login.dto';
 import { JwtPayload } from 'jsonwebtoken';
 
 @Injectable()
@@ -50,6 +55,63 @@ export class AuthService {
         email: user.mobileNumber,
         jwtToken: this.jwtService.sign(payload),
       };
+    } catch (error) {
+      throw new HttpException(
+        error?.response?.message ?? error?.message,
+        error?.status ?? error?.statusCode ?? 500,
+      );
+    }
+  }
+
+  async verifyUser(verifyDto: VerifyAccountDto): Promise<any> {
+    try {
+      const { mobileNumber, verificationOtp } = verifyDto;
+      const mobile = sanitizePhoneNumber(mobileNumber);
+      const user = await this.userModel.findOne({ mobileNumber: mobile.phone });
+      if (
+        !user ||
+        user.verificationOtp !== verificationOtp ||
+        (user.verificationOtpExpires &&
+          new Date() > new Date(user.verificationOtpExpires))
+      )
+        throw new BadRequestException('Invalid or expired OTP');
+
+      user.isVerified = true;
+      user.verificationOtp = null;
+      user.verificationOtpExpires = null;
+      await user.save();
+
+      return { mobileNumber: user.mobileNumber, verified: true };
+    } catch (error) {
+      throw new HttpException(
+        error?.response?.message ?? error?.message,
+        error?.status ?? error?.statusCode ?? 500,
+      );
+    }
+  }
+
+  async resendVerficationOtp(mobileNumber: string): Promise<any> {
+    try {
+      const mobile = sanitizePhoneNumber(mobileNumber);
+      const user = await this.userModel.findOne({ mobileNumber: mobile.phone });
+      if (!user) throw new BadRequestException('User not found');
+      if (user.isVerified)
+        throw new BadRequestException('User already verified');
+
+      let otp = AlphaNumeric(4);
+      let check = await this.userModel.findOne({ verificationOtp: otp });
+      while (check) {
+        otp = AlphaNumeric(4);
+        check = await this.userModel.findOne({ verificationOtp: otp });
+      }
+
+      user.verificationOtp = otp;
+      user.verificationOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+      await user.save();
+      if (process.env.NODE_ENV !== 'production') {
+        return { mobileNumber: mobile.phone, otp };
+      }
+      return { message: 'Verification OTP sent' };
     } catch (error) {
       throw new HttpException(
         error?.response?.message ?? error?.message,

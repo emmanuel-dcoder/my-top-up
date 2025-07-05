@@ -62,3 +62,27 @@ export class ChangePasswordDto {
   @IsNotEmpty()
   newPassword: string;
 }
+
+export class VerifyAccountDto {
+  @ApiProperty({
+    description: 'The mobile/phone number of the user',
+    example: '+2347056431232',
+  })
+  @IsNotEmpty()
+  @IsString()
+  mobileNumber: string;
+
+  @IsNotEmpty()
+  @IsString()
+  verificationOtp: string;
+}
+
+export class ResendVerificationOtpDto {
+  @ApiProperty({
+    description: 'The mobile/phone number of the user',
+    example: '+2347056431232',
+  })
+  @IsNotEmpty()
+  @IsString()
+  mobileNumber: string;
+}
