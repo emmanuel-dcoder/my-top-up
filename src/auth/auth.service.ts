@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
-  AlphaNumeric,
   comparePassword,
   hashPassword,
   RandomSixDigits,
@@ -103,10 +102,10 @@ export class AuthService {
       if (user.isVerified)
         throw new BadRequestException('User already verified');
 
-      let otp = AlphaNumeric(4, 'number');
+      let otp = RandomSixDigits();
       let check = await this.userModel.findOne({ verificationOtp: otp });
       while (check) {
-        otp = AlphaNumeric(4, 'number');
+        otp = RandomSixDigits();
         check = await this.userModel.findOne({ verificationOtp: otp });
       }
 
