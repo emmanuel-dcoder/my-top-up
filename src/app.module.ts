@@ -6,6 +6,7 @@ import { envConfig } from './core/config/env.config';
 import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TopupBoxModule } from './topupbox/topupbox.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AppService } from './app.service';
       secret: `${envConfig.jwt.secret}`,
       signOptions: { expiresIn: `${envConfig.jwt.expiry}` },
     }),
+    TopupBoxModule,
   ],
   controllers: [AppController],
   providers: [AppService],

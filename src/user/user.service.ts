@@ -8,10 +8,14 @@ import {
   RandomSixDigits,
   sanitizePhoneNumber,
 } from 'src/core/common/util/utility';
+import { TopupBoxService } from 'src/topupbox/topupbox.service';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly topupBoxService: TopupBoxService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
@@ -61,5 +65,39 @@ export class UserService {
         error?.status ?? error?.statusCode ?? 500,
       );
     }
+  }
+
+  /** ✅ recharge airtime for user for a specific network */
+  async rechargeForUser(
+    userId: string,
+    network: string,
+    rechargeType: 'AIRTIME' | 'DATA',
+    payload: any,
+  ) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new HttpException('User not found', 404);
+
+    // Ensure payload has beneficiary as user's number if not provided
+    payload.beneficiary = payload.beneficiary || user.mobileNumber;
+
+    const response = await this.topupBoxService.recharge(
+      network,
+      rechargeType,
+      payload,
+    );
+    return { user: user.mobileNumber, result: response };
+  }
+
+  /** ✅ Get data price list for a specific network */
+  async getDataPackagesForNetwork(network: string) {
+    if (!network) {
+      throw new BadRequestException('Network is required');
+    }
+    return await this.topupBoxService.getDataPackages(network.toUpperCase());
+  }
+
+  /** ✅ Get all data price lists */
+  async getAllDataPackages() {
+    return await this.topupBoxService.getAllDataPackages();
   }
 }
