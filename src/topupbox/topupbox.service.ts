@@ -1,16 +1,16 @@
 // src/topupbox/topupbox.service.ts
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
+import axios, { AxiosRequestConfig } from 'axios';
 
 @Injectable()
 export class TopupBoxService {
   private readonly token: string;
   private readonly baseUrl: string;
 
-  constructor(private readonly httpService: HttpService) {
+  constructor() {
     this.token = process.env.TOPUPBOX_ACCESS_TOKEN;
     this.baseUrl = process.env.TOPUPBOX_BASE_URL;
+
     if (!this.token) {
       throw new Error(
         'TOPUPBOX_ACCESS_TOKEN is not set in environment variables',
@@ -23,7 +23,7 @@ export class TopupBoxService {
 
   private getAuthHeaders() {
     return {
-      Authorization: `Bearer ${this.token}`,
+      Authorization: `${this.token}`,
       'Content-Type': 'application/json',
     };
   }
@@ -31,11 +31,11 @@ export class TopupBoxService {
   async getDataPackages(network: string) {
     try {
       const url = `${this.baseUrl}/data-price-point/${network}`;
-      const { data } = await firstValueFrom(
-        this.httpService.get(url, { headers: this.getAuthHeaders() }),
-      );
-      return data;
-    } catch (error) {
+      const response = await axios.get(url, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error: any) {
       throw new HttpException(
         error?.response?.data || error.message,
         error?.response?.status || HttpStatus.BAD_REQUEST,
@@ -45,12 +45,12 @@ export class TopupBoxService {
 
   async getAllDataPackages() {
     try {
-      const url = `${this.baseUrl}/data-price-point`; // ✅ adjust if docs say otherwise
-      const { data } = await firstValueFrom(
-        this.httpService.get(url, { headers: this.getAuthHeaders() }),
-      );
-      return data;
-    } catch (error) {
+      const url = `${this.baseUrl}/data-price-point`;
+      const response = await axios.get(url, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error: any) {
       throw new HttpException(
         error?.response?.data || error.message,
         error?.response?.status || HttpStatus.BAD_REQUEST,
@@ -65,11 +65,11 @@ export class TopupBoxService {
   ) {
     try {
       const url = `${this.baseUrl}/recharge/${network}/${rechargeType}`;
-      const { data } = await firstValueFrom(
-        this.httpService.post(url, payload, { headers: this.getAuthHeaders() }),
-      );
-      return data;
-    } catch (error) {
+      const response = await axios.post(url, payload, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error: any) {
       throw new HttpException(
         error?.response?.data || error.message,
         error?.response?.status || HttpStatus.BAD_REQUEST,
@@ -80,11 +80,11 @@ export class TopupBoxService {
   async getTransactions(page: number, numPerPage: number) {
     try {
       const url = `${this.baseUrl}/query/page/${page}/${numPerPage}`;
-      const { data } = await firstValueFrom(
-        this.httpService.get(url, { headers: this.getAuthHeaders() }),
-      );
-      return data;
-    } catch (error) {
+      const response = await axios.get(url, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error: any) {
       throw new HttpException(
         error?.response?.data || error.message,
         error?.response?.status || HttpStatus.BAD_REQUEST,
