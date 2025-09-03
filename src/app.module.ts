@@ -7,16 +7,19 @@ import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TopupBoxModule } from './topupbox/topupbox.module';
+import { RechargeModule } from './recharge/recharge.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(envConfig.database.mongo_url),
-    AuthModule,
-    UserModule,
     JwtModule.register({
       secret: `${envConfig.jwt.secret}`,
       signOptions: { expiresIn: `${envConfig.jwt.expiry}` },
     }),
+    AuthModule,
+    UserModule,
+    RechargeModule,
+
     TopupBoxModule,
   ],
   controllers: [AppController],

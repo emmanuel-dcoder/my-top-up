@@ -1,6 +1,10 @@
 // src/topupbox/topupbox.service.ts
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
+import {
+  RechargeEnum,
+  RechargeTypeEnum,
+} from 'src/recharge/enum/recharge.enum';
 
 @Injectable()
 export class TopupBoxService {
@@ -59,15 +63,21 @@ export class TopupBoxService {
   }
 
   async recharge(
-    network: string,
-    rechargeType: 'AIRTIME' | 'DATA',
-    payload: any,
+    network: RechargeEnum,
+    rechargeType: RechargeTypeEnum,
+    amount: string,
+    beneficiary: string,
+    customerReference: string,
   ) {
     try {
       const url = `${this.baseUrl}/recharge/${network}/${rechargeType}`;
-      const response = await axios.post(url, payload, {
-        headers: this.getAuthHeaders(),
-      });
+      const response = await axios.post(
+        url,
+        { amount, beneficiary, customer_reference: customerReference },
+        {
+          headers: this.getAuthHeaders(),
+        },
+      );
       return response.data;
     } catch (error: any) {
       throw new HttpException(

@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './core/common/filters/all-exceptions.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-// import { RedisService } from './redis/redis.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,9 +15,6 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-
-  // const redisService = app.get(RedisService);
-  // await redisService.connect();
 
   const config = new DocumentBuilder()
     .setTitle('Top Up API')
