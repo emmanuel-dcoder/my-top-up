@@ -4,16 +4,17 @@ import { RechargeEnum, RechargeTypeEnum } from '../enum/recharge.enum';
 
 export class CreateRechargeDto {
   @ApiProperty({
-    description: 'Network the user is recharging',
-    example: 'mtn, airtel, glo or 9mobile',
+    description:
+      'Network the user is recharging, e.g mtn, airtel, glo or 9mobile',
+    example: 'mtn',
   })
   @IsString()
   @IsNotEmpty()
   network: RechargeEnum;
 
   @ApiProperty({
-    description: 'The type of recharge',
-    example: 'AIRTIME OR DATA',
+    description: 'The type of recharge, e.g AIRTIME OR DATA',
+    example: 'DATA',
   })
   @IsString()
   @IsNotEmpty()
@@ -33,6 +34,5 @@ export class CreateRechargeDto {
   })
   @IsString()
   @IsNotEmpty()
-  @Min(11)
   beneficiary: string;
 }

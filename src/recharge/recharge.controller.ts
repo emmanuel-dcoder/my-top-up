@@ -25,12 +25,9 @@ import { CreateRechargeDto } from './dto/create-recharge.dto';
 @ApiTags('Recharge')
 @Controller('api/v1/recharge')
 export class RechargeController {
-  constructor(
-    // private readonly userService: UserService,
-    private readonly rechargeService: RechargeService,
-  ) {}
+  constructor(private readonly rechargeService: RechargeService) {}
 
-  /** ✅ Recharge airtime/data for authenticated user */
+  /** Recharge airtime/data for authenticated user */
   @Post('recharge')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

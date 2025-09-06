@@ -9,7 +9,7 @@ export class Transaction extends Document {
   @Prop({ required: true })
   reference: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   mobileNumber: string;
 
   @Prop({ type: mongoose.Types.ObjectId, ref: 'User' })

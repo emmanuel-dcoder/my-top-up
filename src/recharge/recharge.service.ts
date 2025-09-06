@@ -1,8 +1,7 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { TopupBoxService } from 'src/topupbox/topupbox.service';
-import { User } from 'src/user/schemas/user.schema';
 import { CreateRechargeDto } from './dto/create-recharge.dto';
 import { RandomSixDigits } from 'src/core/common/util/utility';
 import { Transaction } from 'src/transaction/schemas/transaction.schema';
@@ -51,7 +50,7 @@ export class RechargeService {
       }),
     ]);
 
-    return { result: response };
+    return initializePaystack;
   }
 
   /** ✅ Get data price list for a specific network */
