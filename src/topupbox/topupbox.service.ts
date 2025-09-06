@@ -63,8 +63,8 @@ export class TopupBoxService {
   }
 
   async recharge(
-    network: RechargeEnum,
-    rechargeType: RechargeTypeEnum,
+    network: string,
+    rechargeType: string,
     amount: string,
     beneficiary: string,
     customerReference: string,

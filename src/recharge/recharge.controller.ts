@@ -46,11 +46,13 @@ export class RechargeController {
     body: CreateRechargeDto,
   ) {
     const userId = req.user._id;
+    const mobileNumber = req.user.mobileNumber;
     const data = await this.rechargeService.rechargeForUser(
       {
         ...body,
       },
       userId,
+      mobileNumber,
     );
     return successResponse({
       message: 'Recharge processed successfully',

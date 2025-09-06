@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TopupBoxModule } from './topupbox/topupbox.module';
 import { RechargeModule } from './recharge/recharge.module';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [
@@ -16,11 +17,11 @@ import { RechargeModule } from './recharge/recharge.module';
       secret: `${envConfig.jwt.secret}`,
       signOptions: { expiresIn: `${envConfig.jwt.expiry}` },
     }),
+    TopupBoxModule,
     AuthModule,
     UserModule,
     RechargeModule,
-
-    TopupBoxModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
