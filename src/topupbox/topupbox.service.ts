@@ -49,7 +49,7 @@ export class TopupBoxService {
 
   async getAllDataPackages() {
     try {
-      const url = `${this.baseUrl}/data-price-point`;
+      const url = `${this.baseUrl}/data-price-point/all`;
       const response = await axios.get(url, {
         headers: this.getAuthHeaders(),
       });
