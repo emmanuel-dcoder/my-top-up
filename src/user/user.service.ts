@@ -51,7 +51,7 @@ export class UserService {
     try {
       const user = await this.userModel
         .findOne({ _id: new mongoose.Types.ObjectId(userId) })
-        .select('-password');
+        .select('-password -verificationOtp -verificationOtpExpires');
 
       if (!user) throw new BadRequestException('User not found');
       return user;

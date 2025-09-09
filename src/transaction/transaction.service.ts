@@ -1,16 +1,14 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { envConfig } from 'src/env.config';
 import { Transaction } from 'src/transaction/schemas/transaction.schema';
-import { User } from 'src/user/schemas/user.schema';
 import * as crypto from 'crypto';
 import { TopupBoxService } from 'src/topupbox/topupbox.service';
 
 @Injectable()
 export class TransactionService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
     private topupBoxService: TopupBoxService,
   ) {}
