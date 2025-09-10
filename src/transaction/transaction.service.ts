@@ -1,6 +1,6 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { envConfig } from 'src/env.config';
 import { Transaction } from 'src/transaction/schemas/transaction.schema';
 import * as crypto from 'crypto';
@@ -12,6 +12,21 @@ export class TransactionService {
     @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
     private topupBoxService: TopupBoxService,
   ) {}
+
+  async getTransaction(userId: string) {
+    try {
+      const transaction = await this.transactionModel.find({
+        userId: new mongoose.Types.ObjectId(userId),
+        status: 'confirmed',
+      });
+      return transaction;
+    } catch (error) {
+      throw new HttpException(
+        error?.response?.message ?? error?.message,
+        error?.status ?? error?.statusCode ?? 500,
+      );
+    }
+  }
 
   async handlePaystackEvent(event: any) {
     try {
