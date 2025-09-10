@@ -28,7 +28,7 @@ export class transactionController {
 
   /** get transaction
    */
-  @Get('user ')
+  @Get('user')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all transaction by user' })
