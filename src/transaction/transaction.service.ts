@@ -15,10 +15,13 @@ export class TransactionService {
 
   async getTransaction(userId: string) {
     try {
-      const transaction = await this.transactionModel.find({
-        userId: new mongoose.Types.ObjectId(userId),
-        status: 'confirmed',
-      });
+      const transaction = await this.transactionModel
+        .find({
+          userId: new mongoose.Types.ObjectId(userId),
+          status: 'confirmed',
+        })
+        .sort({ updatedAt: -1 });
+
       return transaction;
     } catch (error) {
       throw new HttpException(
