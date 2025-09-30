@@ -13,8 +13,8 @@ export class CreateRechargeDto {
   network: RechargeEnum;
 
   @ApiProperty({
-    description: 'The type of recharge, e.g AIRTIME OR DATA',
-    example: 'DATA',
+    description: 'The type of recharge, e.g airtime OR data',
+    example: 'airtime',
   })
   @IsString()
   @IsNotEmpty()
@@ -22,7 +22,7 @@ export class CreateRechargeDto {
 
   @ApiProperty({
     description: 'Intended amount to recharge',
-    example: '2000',
+    example: '100',
   })
   @IsString()
   @IsNotEmpty()
@@ -30,7 +30,7 @@ export class CreateRechargeDto {
 
   @ApiProperty({
     description: 'Beneficiary phone number',
-    example: '0908765368',
+    example: '08137123489',
   })
   @IsString()
   @IsNotEmpty()
